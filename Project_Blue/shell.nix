@@ -8,12 +8,20 @@ let
                                                          onnx              onnxscript          skl2onnx                onnxruntime   xgboost    ]);
 in
 pkgs.mkShell {
-  buildInputs = [ pythonEnv pkgs.sqlite];
+  buildInputs = [ pythonEnv pkgs.sqlite pkgs.stdenv.cc.cc.lib pkgs.zeromq];
   shellHook = ''
-    # Create a local .venv folder so pip doesn't throw read-only errors on NixOS
+    # Make C++ runtime libraries available to pip-installed packages
+    export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [
+      pkgs.stdenv.cc.cc.lib
+      pkgs.zeromq
+    ]}:''${LD_LIBRARY_PATH:-}"
+
+    # Create virtual environment if it doesn't exist
     if [ ! -d ".venv" ]; then
-      python -m venv .venv
+      python -m venv --system-site-packages .venv
     fi
+
+    # Activate virtual environment
     source .venv/bin/activate
     pip install medmnist
   '';
