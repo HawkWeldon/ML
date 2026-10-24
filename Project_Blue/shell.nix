@@ -1,7 +1,9 @@
 
 { pkgs ? import <nixpkgs> {
-    config.allowUnfree = true;
-    cudaSupport = true;
+    config = {
+      allowUnfree = true;
+      cudaSupport = true;
+    };
   }
 }:
 
@@ -44,8 +46,8 @@ pkgs.mkShell {
   ];
 
   shellHook = ''
-    # Make C++ runtime libraries available
-    export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [
+    # Expose NVIDIA driver, C++ runtime and ZeroMQ libraries
+    export LD_LIBRARY_PATH="/run/opengl-driver/lib:${pkgs.lib.makeLibraryPath [
       pkgs.stdenv.cc.cc.lib
       pkgs.zeromq
     ]}:''${LD_LIBRARY_PATH:-}"
