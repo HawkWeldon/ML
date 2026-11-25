@@ -1,0 +1,17 @@
+# Local secrets and Python environments
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Real user events and derived datasets must never be committed
+/data/
+
+# Online-trained parameters may contain information from real users
+/artifacts/online_v1/
+
+# Local serialized training checkpoint (trusted load only)
+/artifacts/bootstrap_v1/learner.joblib
